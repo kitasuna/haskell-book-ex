@@ -2,4 +2,10 @@ module Cipher where
 
 import Data.Char
 
-encode :: String -> 
+-- use chr and ord functions
+--
+shiftChar :: Int -> Char -> Char
+shiftChar offset c = chr $ (ord c) + offset
+
+encode :: String -> Int -> String
+encode xs offset = shiftChar offset <$> xs
