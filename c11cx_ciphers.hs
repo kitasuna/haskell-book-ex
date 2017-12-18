@@ -4,8 +4,21 @@ import Data.Char
 
 -- use chr and ord functions
 --
-shiftChar :: Int -> Char -> Char
-shiftChar offset c = chr $ (ord c) + offset
+shiftChar :: (Char, Char) -> Char
+shiftChar (base, offset) = chr $ (ord base) + (getShift offset)
 
-encode :: String -> Int -> String
-encode xs offset = shiftChar offset <$> xs
+unshiftChar :: (Char, Char) -> Char
+unshiftChar (base, offset) = chr $ (ord base) - (getShift offset)
+
+getShift :: Char -> Int
+getShift x = (ord 'A') - (ord x)
+
+genOffsetString :: String -> String -> String
+genOffsetString xs ys = take (length xs) (concat $ repeat ys)
+
+encode :: String -> String -> String
+encode xs ys = shiftChar <$> zip xs (genOffsetString xs ys)
+
+decode :: String -> String -> String
+decode xs ys = unshiftChar <$> zip xs (genOffsetString xs ys)
+
