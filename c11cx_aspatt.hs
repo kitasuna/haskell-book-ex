@@ -1,5 +1,8 @@
 module AsPatt where
 
+-- for toUpper
+import Data.Char
+
 -- Non-contiguous
 isSubseqOf :: (Eq a) => [a] -> [a] -> Bool
 isSubseqOf [] _ = True
@@ -19,4 +22,5 @@ isSubseqOf' sub@(sh:st) full@(fh:ft) =
   else isSubseqOf' sub ft
 
 capitalizeWords :: String -> [(String, String)]
-capitalizeWords = undefined
+capitalizeWords str = f <$> words str
+  where f w@(wh:wt) = (w, [(toUpper wh)] ++ wt)
