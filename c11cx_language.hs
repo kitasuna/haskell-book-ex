@@ -10,5 +10,14 @@ capitalizeWord :: String -> String
 capitalizeWord (x:xs) = [toUpper x] ++ (toLower <$> xs)
 
 capitalizeParagraph :: String -> String
-capitalizeParagraph xs = intercalate " " $ f <$> words xs 
-  where f (one:two:rest) = 
+capitalizeParagraph [] = ""
+capitalizeParagraph xs = intercalate " " $ f $ capitalizeFirst $ words xs 
+  where
+      capitalizeFirst [] = []
+      capitalizeFirst (x:xs) = (capitalizeWord x) : xs
+      f [] = []
+      f (x:[]) = [x]
+      f (one:two:rest) =
+          if last one == '.'
+          then one : (capitalizeWord two) : f rest
+          else one : two : f rest
