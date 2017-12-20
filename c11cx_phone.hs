@@ -1,9 +1,11 @@
 module Phone where
 
+import Data.List (elemIndex)
+
 type SpaceChar = Char
 type CapsChar = Char
 data Key = Key String
-data DaPhone = DaPhone [Key] SpaceChar CapsChar
+data DaPhone = DaPhone [Key]
 
 phone :: DaPhone
 phone = DaPhone [
@@ -15,8 +17,10 @@ phone = DaPhone [
   Key "mno6",
   Key "pqrs7",
   Key "tuv8",
-  Key "wxyz9"
-  ] '0' '*'
+  Key "wxyz9",
+  Key " 0",
+  Key "*"
+  ]
 
 convo :: [String]
 convo =
@@ -33,13 +37,27 @@ convo =
 
 type Digit = Char
 
-type presses = Int
+type Presses = Int
 
 reverseTaps :: DaPhone
             -> Char
             -> [(Digit, Presses)]
             -- prolly wanna change the above to match my def...
-reverseTaps = undefined
+reverseTaps _ ' ' = [('0', 1)] 
+reverseTaps (DaPhone keys) c =
+  if c >= 'A' && c <= 'Z'
+  then ('0', 1) : findChar keys c
+  else findChar keys c
+    where
+      findChar [] _ = []
+      findChar (k:ks) c =
+        case charInKey k c of
+          Just pos -> [(last k), pos]
+          Nothing -> findChar ks c
+
+charInKey :: Key -> Char -> Maybe Int
+charInKey (Key []) _ = Nothing
+charInKey (Key ks) c = elemIndex c ks
 
 cellPhonesDead :: DaPhone
                -> String
