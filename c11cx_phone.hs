@@ -1,6 +1,7 @@
 module Phone where
 
 import Data.List (elemIndex)
+import Data.Char (toLower)
 
 type SpaceChar = Char
 type CapsChar = Char
@@ -46,13 +47,13 @@ reverseTaps :: DaPhone
 reverseTaps _ ' ' = [('0', 1)] 
 reverseTaps (DaPhone keys) c =
   if c >= 'A' && c <= 'Z'
-  then ('0', 1) : findChar keys c
+  then ('0', 1) : findChar keys (toLower c)
   else findChar keys c
     where
       findChar [] _ = []
-      findChar (k:ks) c =
+      findChar (k@(Key str):ks) c =
         case charInKey k c of
-          Just pos -> [(last k), pos]
+          Just pos -> [((last str), (pos + 1))]
           Nothing -> findChar ks c
 
 charInKey :: Key -> Char -> Maybe Int
@@ -62,5 +63,4 @@ charInKey (Key ks) c = elemIndex c ks
 cellPhonesDead :: DaPhone
                -> String
                -> [(Digit, Presses)]
-cellPhonesDead = undefined
-
+cellPhonesDead phone xs = reverseTaps phone `concatMap` xs
