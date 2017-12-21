@@ -43,7 +43,6 @@ type Presses = Int
 reverseTaps :: DaPhone
             -> Char
             -> [(Digit, Presses)]
-            -- prolly wanna change the above to match my def...
 reverseTaps _ ' ' = [('0', 1)] 
 reverseTaps (DaPhone keys) c =
   if c >= 'A' && c <= 'Z'
@@ -64,3 +63,15 @@ cellPhonesDead :: DaPhone
                -> String
                -> [(Digit, Presses)]
 cellPhonesDead phone xs = reverseTaps phone `concatMap` xs
+
+fingerTaps :: [(Digit, Presses)] -> Presses
+fingerTaps [] = 0
+fingerTaps xs =
+  foldr sumPress 0 xs
+          where sumPress (digit, presses) acc = presses + acc
+
+{-
+mostPopularLetter :: String -> Char
+mostPopularLetter [] = ''
+mostPopularLetter xs =  toLower <$> xs
+-}
