@@ -29,5 +29,11 @@ catMaybes (x:xs) =
     Nothing -> catMaybes xs
     Just x -> x : (catMaybes xs)
 
+-- Shout out to gvolpe@github for their solution on this one
 flipMaybe :: [Maybe a] -> Maybe [a]
 flipMaybe [] = Just []
+flipMaybe xs =
+  if hasNothings == False 
+  then Just $ catMaybes xs
+  else Nothing
+    where hasNothings = or $ isNothing <$> xs
