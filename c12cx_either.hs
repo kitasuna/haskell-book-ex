@@ -16,3 +16,8 @@ partitionEithers' xs = (lefts' xs, rights' xs)
 eitherMaybe' :: (b -> c) -> Either a b -> Maybe c
 eitherMaybe' f (Left a) = Nothing
 eitherMaybe' f (Right b) = Just (f b)
+
+either' :: (a -> c) -> (b -> c) -> Either a b -> c
+either' = undefined
+
+eitherMaybe'' :: (b -> c) -> Either a b -> Maybe c
