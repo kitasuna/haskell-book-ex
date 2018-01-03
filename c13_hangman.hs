@@ -53,7 +53,17 @@ charInWord :: Puzzle -> Char -> Bool
 charInWord (Puzzle xs _ _) y = y `elem` xs
 
 alreadyGuessed :: Puzzle -> Char -> Bool
-alreadyGuessed (Puzzle _ _ xs) y = y `elem` xs
+alreadyGuessed (Puzzle _ hits misses) guess =
+     guess `elem` misses
+  || (alreadyInWord guess hits)
+
+alreadyInWord :: Char -> [Maybe Char] -> Bool
+alreadyInWord guess hits = any (\x -> x == True) $ fmap (matchesMaybe guess) hits
+  where
+    matchesMaybe :: Char -> Maybe Char -> Bool
+    matchesMaybe c (Just x) = x == c
+    matchesMaybe c Nothing = False
+    
 
 renderPuzzleChar :: Maybe Char -> Char
 renderPuzzleChar Nothing = '_'
@@ -62,12 +72,15 @@ renderPuzzleChar (Just x) = x
 fillInCharacter :: Puzzle -> Char -> Puzzle
 fillInCharacter (Puzzle word
                  filledInSoFar s) c =
-  Puzzle word newFilledInSoFar (c : s)
+  Puzzle word newFilledInSoFar newMisses
   where zipper guessed wordChar guessChar =
           if wordChar == guessed
           then Just wordChar
           else guessChar
         newFilledInSoFar = zipWith (zipper c) word filledInSoFar
+        newMisses = case alreadyInWord c newFilledInSoFar of
+          True -> s
+          False -> (c : s)
 
 handleGuess :: Puzzle -> Char -> IO Puzzle
 handleGuess puzzle guess = do
@@ -75,12 +88,12 @@ handleGuess puzzle guess = do
   case (charInWord puzzle guess, alreadyGuessed puzzle guess) of
     (_, True) -> do
       putStrLn "You already guessed that\
-              \ character, pick \
-              \ something else!"
+              \ character, pick\
+              \ something else, jerk!"
       return puzzle
     (True, _) -> do
       putStrLn "This character was in the\
-              \ word, filling in the word \
+              \ word, filling in the word\
               \ accordingly"
       return (fillInCharacter puzzle guess)
     (False, _) -> do
