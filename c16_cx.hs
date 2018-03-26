@@ -1,6 +1,23 @@
 {-# LANGUAGE FlexibleInstances #-}
 
 import GHC.Arr
+import Test.QuickCheck
+import Test.QuickCheck.Function
+
+functorIdentity :: (Functor f, Eq (f a)) =>
+                      f a
+                   -> Bool
+
+functorIdentity f = fmap id f == f
+
+functorCompose :: (Eq (f c), Functor f) =>
+                    f a
+                 -> Fun a b
+                 -> Fun b c
+                 -> Bool
+
+functorCompose x (Fun _ f) (Fun _ g) = 
+  (fmap (g . f) x) == (fmap g (fmap f x))
 
 data BoolAndSomethingElse a =
   False' a | True' a
@@ -48,6 +65,23 @@ data Sum b a =
 instance Functor (Sum e) where
   fmap f (First a) = First (f a)
   fmap f (Second b) = Second b
+
+instance (Arbitrary b, Arbitrary a) => Arbitrary (Sum b a) where
+  arbitrary = do
+    b <- arbitrary
+    a <- arbitrary
+    frequency [(1, return (First b)),
+               (1, return (Second a))]
+
+type SumId = (Sum Int Int) -> Bool
+
+type IntToInt = Fun Int Int
+
+type SumComp = (Sum Int Int)
+               -> IntToInt
+               -> IntToInt
+               -> Bool
+  
 
 data Company a b c =
     DeepBlue a b
@@ -154,3 +188,7 @@ instance Functor TalkToMe where
   fmap _ Halt = Halt
   fmap f (Print x y) = Print x $ f y
   fmap f (Read g) = Read $ fmap f g
+
+main = do
+  quickCheck (functorIdentity :: SumId)
+  quickCheck (functorCompose  :: SumComp)
