@@ -127,3 +127,30 @@ instance Functor g => Functor (Notorius g o a) where
 data List a =
     Nil
   | Cons a (List a)
+
+instance Functor (List) where
+  fmap f Nil = Nil
+  fmap f (Cons a b) = Cons (f a) (fmap f b) 
+
+data GoatLord a =
+    NoGoat
+  | OneGoat a
+  | MoreGoats (GoatLord a)
+              (GoatLord a)
+              (GoatLord a)
+
+instance Functor (GoatLord) where
+  fmap _ NoGoat = NoGoat
+  fmap f (OneGoat x) = OneGoat (f x)
+  fmap f (MoreGoats x y z) =
+    MoreGoats (fmap f x) (fmap f y) (fmap f z)
+
+data TalkToMe a =
+    Halt
+  | Print String a
+  | Read  (String -> a)
+
+instance Functor TalkToMe where
+  fmap _ Halt = Halt
+  fmap f (Print x y) = Print x $ f y
+  fmap f (Read g) = Read $ fmap f g
