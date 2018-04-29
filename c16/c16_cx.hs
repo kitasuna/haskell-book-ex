@@ -4,6 +4,10 @@ import GHC.Arr
 import Test.QuickCheck
 import Test.QuickCheck.Function
 
+import Sum
+import Company
+import BoolPlus
+
 functorIdentity :: (Functor f, Eq (f a)) =>
                       f a
                    -> Bool
@@ -18,14 +22,6 @@ functorCompose :: (Eq (f c), Functor f) =>
 
 functorCompose x (Fun _ f) (Fun _ g) = 
   (fmap (g . f) x) == (fmap g (fmap f x))
-
-data BoolAndSomethingElse a =
-  False' a | True' a
-  deriving (Eq, Show)
-
-instance Functor BoolAndSomethingElse where
-  fmap f (False' a) = False' (f a)
-  fmap f (True'  a) = True'  (f a)
 
 data BoolAndMaybeSomethingElse a =
   Falsish | Truish a
@@ -56,43 +52,6 @@ data D = D (Array Word Word) Int Int
 instance Functor D where
   fmap f (D _ a b) = undefined
 -}
-
-data Sum b a =
-    First a
-  | Second b
-  deriving (Eq, Show)
-
-instance Functor (Sum e) where
-  fmap f (First a) = First (f a)
-  fmap f (Second b) = Second b
-
-instance (Arbitrary b, Arbitrary a) => Arbitrary (Sum b a) where
-  arbitrary = do
-    b <- arbitrary
-    a <- arbitrary
-    frequency [(1, return (First b)),
-               (1, return (Second a))]
-
-type SumId = (Sum Int Int) -> Bool
-
-type IntToInt = Fun Int Int
-
-type SumComp = (Sum Int Int)
-               -> IntToInt
-               -> IntToInt
-               -> Bool
-  
-
-data Company a b c =
-    DeepBlue a b
-  | Something c
-  deriving (Eq, Show)
-
-
-instance Functor (Company e e') where
-  fmap f (Something b) = Something (f b)
-  fmap _ (DeepBlue a c) = DeepBlue a c
-
 
 data More a b =
     L b a b
@@ -192,3 +151,6 @@ instance Functor TalkToMe where
 main = do
   quickCheck (functorIdentity :: SumId)
   quickCheck (functorCompose  :: SumComp)
+  quickCheck (functorIdentity :: CompanyId)
+  quickCheck (functorCompose  :: CompanyComp)
+  quickCheck (functorIdentity :: BoolPlusId)
