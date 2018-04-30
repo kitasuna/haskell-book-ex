@@ -19,9 +19,9 @@ instance (Arbitrary b, Arbitrary a) => Arbitrary (Sum b a) where
     frequency [(1, return (First b)),
                (1, return (Second a))]
 
-type SumId = (Sum Int Int) -> Bool
-
 type IntToInt = Fun Int Int
+
+type SumId = (Sum Int Int) -> Bool
 
 type SumComp = (Sum Int Int)
                -> IntToInt

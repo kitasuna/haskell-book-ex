@@ -17,4 +17,6 @@ instance Arbitrary a => Arbitrary (BoolPlus a) where
     frequency [(1, return (False' a)),
                (1, return (True' a))]
 
+type IntToInt = Fun Int Int
 type BoolPlusId = (BoolPlus Int) -> Bool
+type BoolPlusComp = BoolPlus Int -> IntToInt -> IntToInt -> Bool

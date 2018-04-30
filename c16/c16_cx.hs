@@ -7,6 +7,7 @@ import Test.QuickCheck.Function
 import Sum
 import Company
 import BoolPlus
+import BoolPlusM
 
 functorIdentity :: (Functor f, Eq (f a)) =>
                       f a
@@ -22,14 +23,6 @@ functorCompose :: (Eq (f c), Functor f) =>
 
 functorCompose x (Fun _ f) (Fun _ g) = 
   (fmap (g . f) x) == (fmap g (fmap f x))
-
-data BoolAndMaybeSomethingElse a =
-  Falsish | Truish a
-  deriving (Eq, Show)
-
-instance Functor BoolAndMaybeSomethingElse where
-  fmap f Falsish = Falsish
-  fmap f (Truish a) = Truish (f a)
 
 newtype Mu f = InF { outF :: f (Mu f) }
 {-
@@ -154,3 +147,6 @@ main = do
   quickCheck (functorIdentity :: CompanyId)
   quickCheck (functorCompose  :: CompanyComp)
   quickCheck (functorIdentity :: BoolPlusId)
+  quickCheck (functorCompose  :: BoolPlusComp)
+  quickCheck (functorIdentity :: BoolPlusMId)
+  quickCheck (functorCompose :: BoolPlusMComp)

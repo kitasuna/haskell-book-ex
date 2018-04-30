@@ -22,9 +22,9 @@ instance (Arbitrary a, Arbitrary b, Arbitrary c)
       frequency [(1, return (DeepBlue a b)),
                  (1, return (Something c))]
 
-type CompanyId = (Company Int Int Int) -> Bool
-
 type IntToInt = Fun Int Int
+
+type CompanyId = (Company Int Int Int) -> Bool
 
 type CompanyComp = (Company Int Int Int)
                    -> IntToInt
