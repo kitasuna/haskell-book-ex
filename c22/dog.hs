@@ -43,3 +43,8 @@ getDogR :: Person -> Dog
 getDogR =
   Dog <$> dogName <*> address
   
+getDogRM :: Person -> Dog
+getDogRM = do
+  n <- dogName
+  a <- address
+  return $ Dog n a
