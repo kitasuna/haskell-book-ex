@@ -43,3 +43,31 @@ uncurry f (x, y) = f x y
 
 summed :: Num c => (c, c) -> c
 summed = uncurry (+)
+
+s' = summed <$> ((,) <$> xs <*> ys)
+
+bolt :: Integer -> Bool
+bolt = liftA2 (&&) (>3) (<8)
+
+sequA :: Integral a => a -> [Bool]
+sequA m = sequenceA [(>3), (<8), even] m
+
+ex1 = foldr (&&) True $ sequA 6
+ex1' = foldr (&&) True $ sequA 7
+
+ex2 = sequA $ fromMaybe 0 s'
+
+ex3 = bolt $ fromMaybe 0 ys
+
+main :: IO ()
+main = do
+  print $
+    sequenceA [Just 3, Just 2, Just 1]
+  print $ sequenceA [x, y]
+  print $ sequenceA [xs, ys]
+  print $ summed <$> ((,) <$> xs <*> ys)
+  print $ fmap summed ((,) <$> xs <*> zs)
+  print $ bolt 7
+  print $ fmap bolt z
+  print $ sequA 7
+  
