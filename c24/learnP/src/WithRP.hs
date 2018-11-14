@@ -13,6 +13,6 @@ oneTwo = one >> two
 
 oneTwo' = oneTwo >> eof
 
-wtf = string "1" <|> string "12" <|> string "123"
+hifumi = string "1" <|> string "12" <|> string "123"
 
-wtf' = one <|> (one >> two) <|> (one >> two >> three)
+hifumi' = one <|> (one >> two) <|> (one >> two >> three)
