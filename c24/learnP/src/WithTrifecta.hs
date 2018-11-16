@@ -18,3 +18,8 @@ parseFraction = do
   denominator <- decimal
   return ( numerator % denominator )
   
+getDigits :: Parser Integer
+getDigits = do
+  digits <- integer
+  e <- eof
+  return (digits)
