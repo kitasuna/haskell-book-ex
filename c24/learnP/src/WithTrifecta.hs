@@ -23,3 +23,25 @@ getDigits = do
   digits <- integer
   e <- eof
   return (digits)
+
+digitChar :: Parser Char
+digitChar = satisfy (\c -> c >= '0' && c <= '9')
+
+digitString :: Parser String
+digitString = some digitChar
+
+parseFloat :: Parser Float
+parseFloat = do
+  intPart <- decimal
+  char '.'
+  fracPart <- digitString
+  return (read $ (show intPart) ++ "." ++ fracPart :: Float)
+
+type FloatOrFrac = Either Float Rational
+
+parseFF :: Parser FloatOrFrac
+parseFF = 
+      (Left <$> try parseFloat)
+  <|> (Right <$> parseFraction)
+
+

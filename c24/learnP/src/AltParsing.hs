@@ -25,14 +25,20 @@ atoz = some $ satisfy (\c -> (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
 
 parseNos :: Parser NumberOrString
 parseNos =
-  skipMany (oneOf "\n")
+      (Left <$> integer)
+  <|> (Right <$> atoz)
+
+parseNos' :: Parser NumberOrString
+parseNos' =
+      skipMany(oneOf "\n")
+  >>
       (Left <$> integer)
   <|> (Right <$> atoz)
 
 main = do
   let p f i =
         parseString f mempty i
-  print $ p parseNos eitherOr
+  print $ p parseNos' eitherOr
   {-
   print $ p atoz a
   print $ p integer b
