@@ -13,8 +13,7 @@ eitherOr = [r|
 123
 abc
 456
-def
-|]
+def|]
 
 a = "blah"
 b = "123"
@@ -25,20 +24,15 @@ atoz = some $ satisfy (\c -> (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
 
 parseNos :: Parser NumberOrString
 parseNos =
-      (Left <$> integer)
-  <|> (Right <$> atoz)
-
-parseNos' :: Parser NumberOrString
-parseNos' =
       skipMany(oneOf "\n")
   >>
       (Left <$> integer)
-  <|> (Right <$> atoz)
+  <|> (Right <$> some letter)
 
 main = do
   let p f i =
         parseString f mempty i
-  print $ p parseNos' eitherOr
+  print $ p parseNos eitherOr
   {-
   print $ p atoz a
   print $ p integer b
