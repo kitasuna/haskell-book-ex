@@ -1,6 +1,7 @@
 {-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE RankNTypes #-}
 
-module MaybeT where
+module Chap26 where
 
 newtype MaybeT m a =
   MaybeT { runMaybeT :: m (Maybe a) }
@@ -81,7 +82,16 @@ eitherT f g (EitherT amb) =
       Left a  -> f a
       Right b -> g b
 
-{-
-  fab :: m (Either e (a -> b))
-  ema :: m ( Either e a )
--}
+newtype StateT s m a =
+  StateT { runStateT :: s -> m (a, s) }
+
+instance (Functor m)
+      => Functor (StateT s m) where
+  fmap :: forall a b. (a -> b) -> StateT s m a -> StateT s m b
+  fmap f (StateT g) =
+    StateT $ \x ->
+      let mas = g x -- :: m (a, s)
+      in  fmap (\(a, s) -> ( f a, s )) mas
+
+-- fmap f (Stage g) = State $ (f . g)
+--
