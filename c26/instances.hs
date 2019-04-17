@@ -93,5 +93,25 @@ instance (Functor m)
       let mas = g x -- :: m (a, s)
       in  fmap (\(a, s) -> ( f a, s )) mas
 
--- fmap f (Stage g) = State $ (f . g)
---
+instance (Monad m)
+      => Applicative (StateT s m) where
+    pure x = StateT $ \s -> pure (x, s)
+    (StateT fab) <*> (StateT g) =
+      StateT $ \s ->
+        let mas = g s -- :: m (a, s)
+            ma2bs = fab s -- :: m (a -> b, s)
+        in mas >>= (\(a, s) ->
+          do
+            (a2b, s) <- ma2bs
+            return ((a2b a), s))
+
+instance (Monad m)
+      => Monad (StateT s m) where
+    return = pure
+    (StateT sma) >>= f = StateT $ \s ->
+      let mas = sma s
+      in mas >>= (\(a, s) -> (runStateT (f a)) s)
+
+    -- need  :: s -> m (b, s)
+    -- sma   :: s -> m (a, s)
+    -- (>>=) :: StateT s m a -> (a -> StateT s m b) -> StateT s m b
