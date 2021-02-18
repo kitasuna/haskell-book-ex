@@ -18,7 +18,7 @@ extra-source-files:  CHANGELOG.md
 
 executable c23
   main-is:             Main.hs
-  other-modules:       RandomExample, RandomExample2
+  other-modules:       RandomExample, RandomExample2, FizzBuzz, Exercises
   -- other-extensions:
   build-depends:       random, transformers, base >=4.12 && <4.13
   -- hs-source-dirs:
